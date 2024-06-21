@@ -11,9 +11,9 @@ model1 = tf.keras.models.load_model('models_S/model_best.h5')
 model2 = tf.keras.models.load_model('models_S/model_best_DA.h5')
 base_model = DenseNet121(include_top=False, weights='imagenet', input_shape=(150, 150, 3))
 model3 = tf.keras.models.load_model('models_T/model_best.h5')
-model4 = tf.keras.models.load_model('models_T/model_best_DA.h5')
+#model4 = tf.keras.models.load_model('models_T/model_best_DA.h5')
 
-models = [model1, model2, model3, model4]
+models = [model1, model2, model3] #model4]
 
 # Define image size and classes
 IMG_SIZE = 32
