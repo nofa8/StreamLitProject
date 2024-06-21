@@ -79,36 +79,38 @@ if uploaded_file is not None:
         IMG_SIZE = 150
         needs_conv_model = True
     elif model_choice == "Transfer Learning Model with Data Augmentation":
-        model_idx = 3
+        st.error("This model is currently unavailable.")
+        model_idx = -1
         IMG_SIZE = 150
         needs_conv_model = False
     else:
+        model_idx = -1
         st.error("The selected model is not available.")
+    if model_idx != -1:
+        selected_model = models[model_idx]
 
-    selected_model = models[model_idx]
+        image = Image.open(uploaded_file)
+        st.image(image, caption='Uploaded Image', use_column_width=True)
+        st.write("Classifying the image using the selected model...")
 
-    image = Image.open(uploaded_file)
-    st.image(image, caption='Uploaded Image', use_column_width=True)
-    st.write("Classifying the image using the selected model...")
+        with st.spinner('Processing...'):
+            try:
+                label, confidence = predict_image(image, selected_model, needs_conv_model)
+                st.success(f"**Prediction**: {label}")
+                st.info(f"**Confidence**: {confidence*100:.2f}%")
+            except Exception as e:
+                st.error(f"An error occurred: {e}")
 
-    with st.spinner('Processing...'):
-        try:
-            label, confidence = predict_image(image, selected_model, needs_conv_model)
-            st.success(f"**Prediction**: {label}")
-            st.info(f"**Confidence**: {confidence*100:.2f}%")
-        except Exception as e:
-            st.error(f"An error occurred: {e}")
+        # Add additional information
+        st.markdown("### How the model works")
+        st.write("""
+        - **Root Model**: A basic neural network model trained on the dataset.
+        - **Root Model with Data Augmentation**: The same as the root model but trained with augmented data for better generalization.
+        - **Transfer Learning Model**: Uses DenseNet121 pretrained on ImageNet for feature extraction.
+        - **Transfer Learning Model with Data Augmentation**: The same as the transfer learning model but trained with augmented data for better generalization.
+        """)
 
-    # Add additional information
-    st.markdown("### How the model works")
-    st.write("""
-    - **Root Model**: A basic neural network model trained on the dataset.
-    - **Root Model with Data Augmentation**: The same as the root model but trained with augmented data for better generalization.
-    - **Transfer Learning Model**: Uses DenseNet121 pretrained on ImageNet for feature extraction.
-    - **Transfer Learning Model with Data Augmentation**: The same as the transfer learning model but trained with augmented data for better generalization.
-    """)
-
-    # Add footer
-    st.sidebar.info("Developed by Afonso Fernandes and Luís Oliveira.")
+        # Add footer
+        st.sidebar.info("Developed by Afonso Fernandes and Luís Oliveira.")
 else:
     st.info("Please upload an image to get started.")
