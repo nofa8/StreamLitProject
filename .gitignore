@@ -1,0 +1,9 @@
+train*
+test
+test/*
+test/*/*
+trainning
+L_ModelT_1.ipynb
+L_ModelS_Final.ipynb
+Enunciado_Projeto_IA_2221437_2221441.pdf
+*.npy
