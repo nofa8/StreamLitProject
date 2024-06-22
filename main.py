@@ -7,8 +7,8 @@ import keras
 from keras.applications.densenet import DenseNet121, preprocess_input
 
 # Load the trained models
-model1 = tf.keras.models.load_model('models_S/S_with_DA.h5')
-model2 = tf.keras.models.load_model('models_S/S_without_DA.h5')
+model1 = tf.keras.models.load_model('models_S/S_without_DA.h5')
+model2 = tf.keras.models.load_model('models_S/S_with_DA.h5')
 base_model = DenseNet121(include_top=False, weights='imagenet', input_shape=(150, 150, 3))
 model3 = tf.keras.models.load_model('models_T/T_without_DA.h5')
 model4 = tf.keras.models.load_model('models_T/T_with_DA.h5')
@@ -19,6 +19,7 @@ models = [model1, model2, model3, model4, model5]
 # Define image size and classes
 IMG_SIZE = 32
 CLASSES = ["Airplane", "Automobile", "Bird", "Cat", "Deer", "Dog", "Frog", "Horse", "Ship", "Truck"]
+
 
 def predict_image(image, model, needs_conv_model):
     image = image.resize((IMG_SIZE, IMG_SIZE))
@@ -32,7 +33,7 @@ def predict_image(image, model, needs_conv_model):
     return predicted_class, confidence
 
 # Streamlit app
-st.set_page_config(page_title="Image Classification Web App", page_icon=":camera:", layout="wide")
+st.set_page_config(page_title="Image Classification Web App", page_icon=":camera:")
 
 
 st.title("Image Classification Web App")
@@ -64,6 +65,7 @@ st.sidebar.write("""
 model_choice = st.sidebar.selectbox("Select Model", ["Root Model", "Root Model with Data Augmentation", "Transfer Learning Model", "Transfer Learning Model with Data Augmentation", "Transfer Learning Model with Data Augmentation and Fine Tunning" ])
 
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
+st.sidebar.info("Developed by Afonso Fernandes and Luís Oliveira.")
 
 if uploaded_file is not None:
     # Mapping the choice
@@ -105,7 +107,6 @@ if uploaded_file is not None:
             except Exception as e:
                 st.error(f"An error occurred: {e}")
 
-        # Add additional information
         st.markdown("### How the model works")
         st.write("""
         - **Root Model**: A basic neural network model trained on the dataset.
@@ -115,7 +116,6 @@ if uploaded_file is not None:
         - **Transfer Learning Model with Data Augmentation and Fine Tunning**: The same as the transfer learning model with data augmentation but with layers unfrozen, more specific.
         """)
 
-        # Add footer
-        st.sidebar.info("Developed by Afonso Fernandes and Luís Oliveira.")
+        
 else:
     st.info("Please upload an image to get started.")
