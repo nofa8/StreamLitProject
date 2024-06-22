@@ -7,6 +7,7 @@ import keras
 from keras.applications.densenet import DenseNet121, preprocess_input
 
 # Load the trained models
+### THIS needs to be modified 
 model1 = tf.keras.models.load_model('models_S/S_without_DA.h5')
 model2 = tf.keras.models.load_model('models_S/S_with_DA.h5')
 base_model = DenseNet121(include_top=False, weights='imagenet', input_shape=(150, 150, 3))
