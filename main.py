@@ -7,13 +7,14 @@ import keras
 from keras.applications.densenet import DenseNet121, preprocess_input
 
 # Load the trained models
-model1 = tf.keras.models.load_model('models_S/model_best.h5')
-model2 = tf.keras.models.load_model('models_S/model_best_DA.h5')
+model1 = tf.keras.models.load_model('models_S/S_with_DA.h5')
+model2 = tf.keras.models.load_model('models_S/S_without_DA.h5')
 base_model = DenseNet121(include_top=False, weights='imagenet', input_shape=(150, 150, 3))
-model3 = tf.keras.models.load_model('models_T/model_best.h5')
-#model4 = tf.keras.models.load_model('models_T/model_best_DA.h5')
+model3 = tf.keras.models.load_model('models_T/T_without_DA.h5')
+model4 = tf.keras.models.load_model('models_T/T_with_DA.h5')
+model5 = tf.keras.models.load_model('models_T/T_with_DA_and_FT.h5')
 
-models = [model1, model2, model3] #model4]
+models = [model1, model2, model3, model4, model5]
 
 # Define image size and classes
 IMG_SIZE = 32
@@ -60,7 +61,7 @@ st.sidebar.write("""
 3. **See the Results**: View the predicted class and the confidence score.
 """)
 
-model_choice = st.sidebar.selectbox("Select Model", ["Root Model", "Root Model with Data Augmentation", "Transfer Learning Model", "Transfer Learning Model with Data Augmentation"])
+model_choice = st.sidebar.selectbox("Select Model", ["Root Model", "Root Model with Data Augmentation", "Transfer Learning Model", "Transfer Learning Model with Data Augmentation", "Transfer Learning Model with Data Augmentation and Fine Tunning" ])
 
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
@@ -79,10 +80,13 @@ if uploaded_file is not None:
         IMG_SIZE = 150
         needs_conv_model = True
     elif model_choice == "Transfer Learning Model with Data Augmentation":
-        st.error("This model is currently unavailable.")
-        model_idx = -1
+        model_idx = 3
         IMG_SIZE = 150
         needs_conv_model = False
+    elif model_choice == "Transfer Learning Model with Data Augmentation and Fine Tunning":
+        model_idx = 3
+        IMG_SIZE = 150
+        needs_conv_model = False        
     else:
         model_idx = -1
         st.error("The selected model is not available.")
@@ -108,6 +112,7 @@ if uploaded_file is not None:
         - **Root Model with Data Augmentation**: The same as the root model but trained with augmented data for better generalization.
         - **Transfer Learning Model**: Uses DenseNet121 pretrained on ImageNet for feature extraction.
         - **Transfer Learning Model with Data Augmentation**: The same as the transfer learning model but trained with augmented data for better generalization.
+        - **Transfer Learning Model with Data Augmentation and Fine Tunning**: The same as the transfer learning model with data augmentation but with layers unfrozen, more specific.
         """)
 
         # Add footer
